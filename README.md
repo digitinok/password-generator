@@ -26,6 +26,9 @@ This is how the deployed page looks like:
 
 <p style="text-align: center;">Screenshot of deployed Page</p>
 
+## Future Improvements
+
+Use form input elements to collect user password length and character selections rather than prompting the user.
 
 ## Credits
 
