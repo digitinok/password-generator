@@ -91,21 +91,31 @@ const upperCasedCharacters = [
 // Function to prompt user for password options
 function getPasswordOptions() {
   // declaring variables
-  let passwordLength;
+  let password = {
+    length: 0,
+  };
 
   // Reading in the expected length of the password and checking the size and format
-  do {
-	  passwordLength = parseInt(prompt("How many characters shall you password have? \nPassword length should be between 10 and 64 characters"));
-  } while (passwordLength < 10 || passwordLength > 64 || isNaN(passwordLength)); 
+	password.length = parseInt(prompt("How many characters shall you password have? \nPassword length should be between 10 and 64 characters"));
   
+  // checking the length of the password and if it is numeric
+  if (password.length < 10 || password.length > 64 || isNaN(password.length)) {
+    password.message =  "Your Password needs to be between 10 and 64 characters long!";
+    return password;
+  }
+  
+  console.log(password.length)
   // getting the expected characters in the password
-  alert("please choose at least one of the follwing four options:")
-  const hasLowerCase = confirm("Would you like to use lower case letters a-z in your password?");
-  const hasUpperCase = confirm("Would you like to use upper case letters A-Z in your password?");
-  const hasNumbers = confirm("Would you like to use numbers 0-9 in your password?");
-  const hasSpecialCharacters = confirm("Would you like to use special characters in your password?");
+  alert("Please choose at least one of the following four options:")
+  password.hasLowerCase = confirm("Would you like to use lower case letters a-z in your password?");
+  password.hasUpperCase = confirm("Would you like to use upper case letters A-Z in your password?");
+  password.hasNumbers = confirm("Would you like to use numbers 0-9 in your password?");
+  password.hasSpecialCharacters = confirm("Would you like to use special characters in your password?");
 
-  return [passwordLength, hasLowerCase, hasUpperCase, hasNumbers, hasSpecialCharacters]
+  if (!( password.hasLowerCase || password.hasUpperCase || password.hasNumbers || password.hasSpecialCharacters )) {
+    password.message =  "No valid Password option chosen (a-z, A-Z, 0-9 or special characters).\n Please try again.";
+  }
+  return password;
 }
 
 // Function for getting a random element from an array
@@ -121,38 +131,38 @@ function getRandom(arr) {
 function generatePassword() {
   // initialize variables to be empty
   let possibleCharacters = [];
-  let password = "";
-
-  [passwordLength, hasLowerCase, hasUpperCase, hasNumbers, hasSpecialCharacters] = getPasswordOptions();
+  let password = getPasswordOptions();
+  password.password = "";
  
-  if (!( hasLowerCase || hasUpperCase || hasNumbers || hasSpecialCharacters )) {
-    return "No valid Password option chosen\n please try again"
+  if ('message' in password) {
+    return password.message;
   }
+
   // ensure each chosen character category is use at least once 
   // and create one array with all possible characters from which to choose randomly
-  if (hasLowerCase) {
+  if (password.hasLowerCase) {
     possibleCharacters = possibleCharacters.concat(lowerCasedCharacters);
-    password += getRandom(lowerCasedCharacters);
+    password.password += getRandom(lowerCasedCharacters);
   }
-  if (hasUpperCase) {
+  if (password.hasUpperCase) {
     possibleCharacters = possibleCharacters.concat(upperCasedCharacters);
-    password += getRandom(upperCasedCharacters);
+    password.password += getRandom(upperCasedCharacters);
   }
-  if (hasNumbers) {
+  if (password.hasNumbers) {
     possibleCharacters = possibleCharacters.concat(numericCharacters);
-    password += getRandom(numericCharacters);
+    password.password += getRandom(numericCharacters);
   }
-  if (hasSpecialCharacters) {
+  if (password.hasSpecialCharacters) {
     possibleCharacters = possibleCharacters.concat(specialCharacters);
-    password += getRandom(specialCharacters);
+    password.password += getRandom(specialCharacters);
   }
   // password length to get characters
-  for (let i = password.length; i < passwordLength; i++) {
-    password += getRandom(possibleCharacters); 
+  for (let i = password.password.length; i < password.length; i++) {
+    password.password += getRandom(possibleCharacters); 
   }
-  console.log(password, password.length)
-  return password;
-  return [passwordLength, hasLowerCase, hasUpperCase, hasNumbers, hasSpecialCharacters];
+  console.log(password.password, password.password.length)
+  return password.password;
+
 }
 
 // Get references to the #generate element
